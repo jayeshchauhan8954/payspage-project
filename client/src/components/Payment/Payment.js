@@ -17,10 +17,12 @@ import {
 import { apiRequest } from "../../utils/apiRequest";
 import { BASE_URL } from "../../api/base_url";
 import { paymentValidationSchema } from "./validation";
+import { useNavigate } from "react-router-dom";
 
 const PaymentDialog = () => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +43,9 @@ const PaymentDialog = () => {
                 });
 
                 setLoading(false);
-
+                if (response.message === 'Unauthorized access.') {
+                    navigate('/sign-in')
+                }
                 switch (response.status) {
                     case 200:
                         console.log("Payment successful:", response.data);
