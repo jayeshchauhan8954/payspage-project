@@ -118,12 +118,8 @@ This project is a backend server designed to handle API requests for payment pro
      ```bash  
      npm install  
      ```
-2. **Generate Swagger output file**:
-   - Run the command to generate doc:
-     ```bash  
-     npm run generate:doc 
-     ```
-3. **Starting the Server**:
+
+2. **Starting the Server**:
    - Run the server:
      ```bash  
      npm start  

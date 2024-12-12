@@ -1,6 +1,4 @@
 const { serviceResponse } = require("@src/utils/helpers/api_response")
-const { rateLimit } = require("express-rate-limit")
-const { clientOrigin } = require("@config/index")
 
 module.exports = {
     handleCatchError: (err, req, res, next) => {
@@ -18,25 +16,6 @@ module.exports = {
             return res.send(new serviceResponse({ status: 404, errors: [{ message: "Route not found." }] }))
         } catch (err) {
             return res.send(new serviceResponse({ status: 404, errors: [{ message: err.message }] }))
-        }
-    },
-
-    handleCors: (req, res, next) => {
-        try {
-            const origin = req.headers.origin;
-            // Check if the incoming origin is in the allowed origins list
-            if (clientOrigin.includes(origin)) {
-                res.setHeader('Access-Control-Allow-Origin', origin);  // Allow the matched origin
-            } else {
-                // If origin is not allowed, don't set Access-Control-Allow-Origin header
-                res.setHeader('Access-Control-Allow-Origin', '');  // Or leave it unset (no header)
-            }
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-            res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-Width, Content-Type, Accept, Authorization');
-            res.setHeader('Access-Control-Allow-Credentials', true);
-            next();
-        } catch (err) {
-            return res.send(new serviceResponse({ status: 404, errors: err.message }))
         }
     },
 
@@ -58,13 +37,4 @@ module.exports = {
             return res.send(new serviceResponse({ status: 404, errors: err.message }))
         }
     },
-    handleRateLimit: rateLimit({
-        windowMs: 1 * 60 * 1000, // 1 minutes
-        max: 50, // Limit each IP to 5 requests per `window` (here, per 1 minutes)
-        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-        handler: (req, res, next, options) => {
-            return res.send(new serviceResponse({ status: options.statusCode, errors: [{ message: options.message }] }))
-        }
-    })
 }
